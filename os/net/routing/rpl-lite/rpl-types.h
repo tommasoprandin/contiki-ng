@@ -51,6 +51,8 @@
 
 /** \brief Set IP address addr to the link-local, all-rpl-nodes
    multicast address. */
+#include "uip.h"
+#include <stdint.h>
 #define uip_create_linklocal_rplnodes_mcast(addr)	\
   uip_ip6addr((addr), 0xff02, 0, 0, 0, 0, 0, 0, 0x001a)
 

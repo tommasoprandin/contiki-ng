@@ -42,6 +42,7 @@
  #ifndef RPL_ICMP6_H_
  #define RPL_ICMP6_H_
 
+#include "rpl-types.h"
 #include "uip.h"
 #include "uip-ds6.h"
 #include "uip-ds6-nbr.h"
@@ -83,6 +84,14 @@ struct rpl_dao {
   uint8_t flags;
 };
 typedef struct rpl_dao rpl_dao_t;
+
+/* Hooks for DIO, DAO and DIS reception callback */
+struct rpl_hooks {
+    void (*dio_hook)(rpl_dio_t *dio, uip_ipaddr_t *from);
+    void (*dao_hook)(rpl_dao_t *dao, uip_ipaddr_t *from);
+    void (*dis_hook)(uip_ipaddr_t *from);
+};
+typedef struct rpl_hooks rpl_hooks_t;
 
 /********** Public functions **********/
 
@@ -129,6 +138,24 @@ void rpl_icmp6_dao_output(uint8_t lifetime);
  * \param status The status of the DAO-ACK (see RPL_DAO_ACK_* defines)
 */
 void rpl_icmp6_dao_ack_output(uip_ipaddr_t *dest, uint8_t sequence, uint8_t status);
+
+/**
+ * Install a callback called on DIO reception.
+ * \param cb The callback to be invoked.
+*/
+void rpl_install_dio_callback(void (*)(rpl_dio_t *dio, uip_ipaddr_t *from));
+
+/**
+ * Install a callback called on DAO reception.
+ * \param cb The callback to be invoked.
+*/
+void rpl_install_dao_callback(void (*)(rpl_dao_t *dao, uip_ipaddr_t *from));
+
+/**
+ * Install a callback called on DIS reception.
+ * \param cb The callback to be invoked.
+*/
+void rpl_install_dis_callback(void (*)(uip_ipaddr_t *from));
 
 /**
  * Initializes rpl-icmp6 module, registers ICMPv6 handlers for all
